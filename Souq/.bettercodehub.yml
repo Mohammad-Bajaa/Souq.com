@@ -1,0 +1,2 @@
+exclude:
+- .*/src\Souq.Web\wwwroot\lib\**\*
