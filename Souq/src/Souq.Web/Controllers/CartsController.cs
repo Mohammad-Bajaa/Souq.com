@@ -26,6 +26,15 @@ namespace Souq.Web.Controllers
                
             return View(await storeDbContext.ToListAsync());
         }
+        
+        public async Task<IActionResult> AddItemToCart(int? item_id, int? cart_id)
+        {
+            var cart = _context.Carts.Find(cart_id);
+            var item = _context.Items.Find(item_id);
+
+            CartItems cart_items = new CartItems();
+            return View();
+        }
        public async Task<IActionResult> CustomerCart(int customer_id)
         {
            

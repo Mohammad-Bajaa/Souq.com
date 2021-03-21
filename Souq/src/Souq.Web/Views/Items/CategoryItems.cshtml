@@ -63,11 +63,11 @@
                         <div class="card">
                             <img class="card-img-top" src="https://dummyimage.com/600x400/55595c/fff" alt="Card image cap">
                             <div class="card-body">
-                                <h4 class="card-title"><a href="product.html" title="View Product">@item.Name</a></h4>
+                                <h4 style="text-align:center;" class="card-title"><a href="product.html" title="View Product">@item.Name</a></h4>
                                 <p class="card-text">@item.Description</p>
                                 <div class="row">
                                     <div class="col">
-                                        <p class="btn btn-danger btn-block">@item.Price $</p>
+                                        <div style="width: 216px; text-align:center;font-weight: bold;"class="p-3 mb-2 bg-light text-dark">@item.Price $</div>
                                     </div>
                                     <div class="col">
                                         @{ int flag = 0;
@@ -81,11 +81,11 @@
                                             }
                                             if (flag == 1)
                                             {
-                                                <a href="#" class="btn btn-success btn-block">Remove</a>
+                                                <a href="#" style="width: 216px;"class="btn btn-danger btn-block">Remove</a>
                                             }
                                             else
                                             {
-                                                <a href="#" class="btn btn-success btn-block">Add to cart</a>
+                                                <a href="#"style="width: 216px;" class="btn btn-success btn-block">Add to cart</a>
                                             }
 
                                         }

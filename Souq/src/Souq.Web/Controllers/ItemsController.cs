@@ -37,9 +37,11 @@ namespace Souq.Web.Controllers
         {
             return View(await _context.Items.ToListAsync());
         }
-        public async Task<IActionResult> ItemPage()
+        public async Task<IActionResult> ItemPage(int? item_id)
         {
-            return View(await _context.Items.ToListAsync());
+            var item = _context.Items.Find(item_id);
+            ViewBag.item = item;
+            return View();
         }
         // GET: Items
 
@@ -91,6 +93,7 @@ namespace Souq.Web.Controllers
                     {
                         if (i.CartID == cart.Id)
                         {
+                            ViewBag.cart_id = cart.Id;
                             cart1Items.Add(i);
                         }
                        
