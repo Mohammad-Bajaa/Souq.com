@@ -16,7 +16,7 @@ namespace Souq.Web.Controllers
     public class ItemsController : Controller
     {
         private readonly StoreDbContext _context;
-        private IEnumerable<Item> x;
+        private IEnumerable<Item> _itemsFromSupplir;
 
         public ItemsController(StoreDbContext context)
         {
@@ -25,7 +25,7 @@ namespace Souq.Web.Controllers
             var task = Task.Run(async () =>
             {
                 HttpResponseMessage result = await client.GetAsync("https://localhost:44399/api/Products");
-              x= JsonConvert.DeserializeObject<IEnumerable<Item>>(await result.Content.ReadAsStringAsync());
+              _itemsFromSupplir= JsonConvert.DeserializeObject<IEnumerable<Item>>(await result.Content.ReadAsStringAsync());
 
             });
            // task.Wait();
@@ -115,10 +115,15 @@ namespace Souq.Web.Controllers
         public async Task<IActionResult> SupplierItems()
         {
             // var storeDbContext = _context.Items.Include(i => i.Category);
-            List<ItemViewModel> res = new List<ItemViewModel>()
+            List<ItemViewModel> res = new List<ItemViewModel>();
                 ;
-            foreach (var item in x)
+            foreach (var item in _itemsFromSupplir)
             {
+                var tempItem = _context.Items.FirstOrDefault(m =>( 
+                    m.Name == item.Name
+                &&m.ProductionDate==item.ProductionDate
+                &&m.ExpireDate==item.ExpireDate
+                ));
                 ItemViewModel addedItem = new ItemViewModel
                 { 
                 Id=item.Id,
@@ -133,10 +138,13 @@ namespace Souq.Web.Controllers
                
                 
                 };
-                var i = _context.Items.FirstOrDefault(m => m.Id == item.Id);
-                if (i != null)
+               
+                if (tempItem != null)
                 {
                     addedItem.IsSelected = true;
+                }
+                else {
+                    addedItem.IsSelected = false;
                 }
                 res.Add(addedItem);
 
@@ -153,12 +161,12 @@ namespace Souq.Web.Controllers
                 var tempItem=_context.Items.FirstOrDefault(m => m.Name == item.Name);
                 if(tempItem==null && item.IsSelected)
                 {
-                    _context.Items.Add(x.First(m=>m.Name==item.Name));
+                    _context.Items.Add(_itemsFromSupplir.First(m=>m.Name==item.Name));
                   //  _context.SaveChanges();
                 }
                 else if (tempItem != null && !item.IsSelected)
                 {
-                    _context.Items.Remove(x.First(m => m.Name == item.Name));
+                    _context.Items.Remove(_itemsFromSupplir.First(m => m.Name == item.Name));
                 }
                 else
                 {
@@ -172,7 +180,7 @@ namespace Souq.Web.Controllers
         
         public async Task<ActionResult> AddNewItem(int id)
         {
-            var item = x.FirstOrDefault(m => m.Id == id);
+            var item = _itemsFromSupplir.FirstOrDefault(m => m.Id == id);
             var itemVM = ItemVMCopy(item);
             return View(itemVM);
         }
@@ -182,10 +190,37 @@ namespace Souq.Web.Controllers
             Item ni = ItemFromViewModel(entity);
             ni.Id = 0;
             ni.CategoryID = 1;
+
             _context.Items.Add(ni);
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<ActionResult> RemoveItem(int id)//here we will take the id from supplier, getTheSupplierItemBy id and then find the item from the Client items
+        {
+            var selectedItem = _itemsFromSupplir.FirstOrDefault(m => m.Id == id);
+            var item = ItemVMCopy(selectedItem);
+           
+            return View(item);
+        }
+        [HttpPost, ActionName("RemoveItem")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveConfirmed(int id)
+        {
+            var selectedItem = _itemsFromSupplir.FirstOrDefault(m => m.Id == id);
+            var item = ItemVMCopy(selectedItem);
+            Item itemToRemove = _context.Items.FirstOrDefault(m => (
+                    m.Name == item.Name
+                && m.ProductionDate == item.ProductionDate
+                && m.ExpireDate == item.ExpireDate
+                ));
+
+            _context.Items.Remove(itemToRemove);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+        
+
         // GET: Items/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -246,8 +281,6 @@ namespace Souq.Web.Controllers
         }
 
         // POST: Items/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,ProductionDate,ExpireDate,Amount,Price,ImageName,ImagePath,CategoryID,isoffer")] Item item)
