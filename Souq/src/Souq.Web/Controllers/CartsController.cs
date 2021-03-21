@@ -19,12 +19,19 @@ namespace Souq.Web.Controllers
         }
 
         // GET: Carts
+        [HttpGet("Carts/Index")]
         public async Task<IActionResult> Index()
         {
             var storeDbContext = _context.Carts.Include(c => c.Customer);
+               
             return View(await storeDbContext.ToListAsync());
         }
-
+       public async Task<IActionResult> CustomerCart(int customer_id)
+        {
+           
+            return View();
+        }
+        [HttpGet("Carts/Details/{id}")]
         // GET: Carts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -44,6 +51,7 @@ namespace Souq.Web.Controllers
             return View(cart);
         }
 
+        [HttpGet("Carts/Create")]
         // GET: Carts/Create
         public IActionResult Create()
         {
@@ -54,7 +62,7 @@ namespace Souq.Web.Controllers
         // POST: Carts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("Carts/Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,CustomerId")] Cart cart)
         {
@@ -68,6 +76,7 @@ namespace Souq.Web.Controllers
             return View(cart);
         }
 
+        [HttpGet("Carts/Edit/{id}")]
         // GET: Carts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -88,7 +97,7 @@ namespace Souq.Web.Controllers
         // POST: Carts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("Carts/Edit/{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CustomerId")] Cart cart)
         {
@@ -120,7 +129,7 @@ namespace Souq.Web.Controllers
             ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Id", cart.CustomerId);
             return View(cart);
         }
-
+        [HttpPost("Carts/Delete/{id}")]
         // GET: Carts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

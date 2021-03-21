@@ -9,6 +9,7 @@ using Clean.Architecture.Core.Entities;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Souq.Core.ViewModels;
+using X.PagedList;
 
 namespace Souq.Web.Controllers
 {
@@ -27,7 +28,7 @@ namespace Souq.Web.Controllers
               _itemsFromSupplir= JsonConvert.DeserializeObject<IEnumerable<Item>>(await result.Content.ReadAsStringAsync());
 
             });
-            task.Wait();
+           // task.Wait();
             // Console.WriteLine(result.StatusCode);
 
             _context = context;
@@ -36,7 +37,77 @@ namespace Souq.Web.Controllers
         {
             return View(await _context.Items.ToListAsync());
         }
+        public async Task<IActionResult> ItemPage()
+        {
+            return View(await _context.Items.ToListAsync());
+        }
         // GET: Items
+
+        public async Task<IActionResult> CategoryItems(int category_id,int page_number)
+            {
+            ViewBag.category_id = category_id;
+            /*ViewBag.categories =  _context.Categories.ToListAsync();
+
+
+             var items =  _context.Items;
+             List <Item> new_items = new List<Item>();
+             foreach(var item in items)
+             {
+                 if(item.CategoryID == category_id)
+                 {
+                     new_items.Add(item);
+                 }
+             }
+         ViewBag.items = new_items;
+             return View();
+
+
+         var skip = (page_number - 1) * 6;
+         var take = 6;*/
+
+            ViewBag.categories = await _context.Categories.ToListAsync();
+            ViewBag.page_number = page_number;
+
+            var items = _context.Items;
+            List<Item> new_items = new List<Item>();
+            foreach (var item in items)
+            {
+                if (item.CategoryID == category_id)
+                {
+                    new_items.Add(item);
+                }
+            }
+            ViewBag.items = new_items.ToList().ToPagedList(page_number, 3);
+            var carts = _context.Carts.ToList();
+            CartItems c = new CartItems();
+            List<CartItems> cart1Items = new List<CartItems>();
+            foreach (var cart in carts)
+            {
+                //customer_id = 1;
+               if (cart.CustomerId == 1)
+                {
+                    var cartitems = _context.CartItems.ToList();
+                    foreach (var i in cartitems)
+                    {
+                        if (i.CartID == cart.Id)
+                        {
+                            cart1Items.Add(i);
+                        }
+                       
+
+                    }
+                     break;
+                }
+            }
+            var customer_items = cart1Items.ToList();
+            ViewBag.customer_items = customer_items;
+
+            return View();
+            //ViewBag.PageNumber = page_number;
+
+
+            //return View(await _context.Items.ToListAsync());
+        }
         [HttpGet]
         public async Task<IActionResult> SupplierItems()
         {

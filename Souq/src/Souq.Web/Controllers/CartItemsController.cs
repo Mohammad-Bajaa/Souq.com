@@ -17,14 +17,14 @@ namespace Souq.Web.Controllers
         {
             _context = context;
         }
-
+        [HttpGet("CartItems/Index")]
         // GET: CartItems
         public async Task<IActionResult> Index()
         {
             var storeDbContext = _context.CartItems.Include(c => c.Cart).Include(c => c.Item);
             return View(await storeDbContext.ToListAsync());
         }
-
+        [HttpGet("CartItems/Details")]
         // GET: CartItems/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -44,11 +44,13 @@ namespace Souq.Web.Controllers
 
             return View(cartItems);
         }
-
+        [HttpGet("CartItems/Create")]
         // GET: CartItems/Create
         public IActionResult Create()
         {
-            ViewData["ItemId"] = new SelectList(_context.Carts, "Id", "Id");
+            ViewBag.Carts = _context.Carts.ToList();
+
+            ViewData["CartsId"] = new SelectList(_context.Carts, "Id", "Id");
             ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Id");
             return View();
         }
@@ -56,7 +58,7 @@ namespace Souq.Web.Controllers
         // POST: CartItems/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("CartItems/Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Quantity,CartID,ItemId")] CartItems cartItems)
         {
@@ -70,7 +72,6 @@ namespace Souq.Web.Controllers
             ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Id", cartItems.ItemId);
             return View(cartItems);
         }
-
         // GET: CartItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -92,7 +93,6 @@ namespace Souq.Web.Controllers
         // POST: CartItems/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Quantity,CartID,ItemId")] CartItems cartItems)
         {
@@ -125,7 +125,6 @@ namespace Souq.Web.Controllers
             ViewData["ItemId"] = new SelectList(_context.Items, "Id", "Id", cartItems.ItemId);
             return View(cartItems);
         }
-
         // GET: CartItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -145,7 +144,6 @@ namespace Souq.Web.Controllers
 
             return View(cartItems);
         }
-
         // POST: CartItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
