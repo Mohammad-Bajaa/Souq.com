@@ -11,9 +11,11 @@
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryContentRootAttribute("Souq.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "X:\\Web\\Souq\\Souq\\src\\Souq.Infrastructure", "Souq.Infrastructure.csproj", "0")]
-[assembly: Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryContentRootAttribute("Souq.UnitTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "X:\\Web\\Souq\\Souq\\tests\\Souq.UnitTests", "Souq.UnitTests.csproj", "0")]
-[assembly: Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryContentRootAttribute("Souq.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "X:\\Web\\Souq\\Souq\\src\\Souq.Web", "Souq.Web.csproj", "0")]
+[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap4")]
+[assembly: Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryContentRootAttribute("Souq.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "C:\\Users\\fater\\source\\repos\\GitHub\\SouqDotCom\\Souq.com\\Souq\\src\\Souq.Infrastructu" +
+    "re", "Souq.Infrastructure.csproj", "0")]
+[assembly: Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryContentRootAttribute("Souq.UnitTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "C:\\Users\\fater\\source\\repos\\GitHub\\SouqDotCom\\Souq.com\\Souq\\tests\\Souq.UnitTests", "Souq.UnitTests.csproj", "0")]
+[assembly: Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryContentRootAttribute("Souq.Web, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", "C:\\Users\\fater\\source\\repos\\GitHub\\SouqDotCom\\Souq.com\\Souq\\src\\Souq.Web", "Souq.Web.csproj", "0")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("Souq.FunctionalTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
