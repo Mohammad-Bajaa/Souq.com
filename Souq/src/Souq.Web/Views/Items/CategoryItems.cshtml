@@ -35,9 +35,9 @@
             <div class="card bg-light mb-3">
                 <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-list"></i> Categories</div>
                 <ul class="list-group category_block">
-                    @foreach (var item in ViewBag.Categories)
+                    @foreach (var item in ViewBag.categories)
                     {
-                        <li class="list-group-item"><a asp-controller="Items" asp-action="CategoryItems" asp-route-category_id="@item.Id" asp-route-page_number=@ViewBag.page_number>@item.Name </a></li>
+                        <li class="list-group-item"><a  asp-controller="Items" asp-action="CategoryItems" asp-route-category_id="@item.Id" asp-route-page_number=@ViewBag.page_number >@item.Name </a></li>
                     }
 
                 </ul>
@@ -55,7 +55,7 @@
         <div class="col">
             <div class="row">
 
-                @foreach (var item in ViewBag.Items)
+                @foreach (var item in ViewBag.items)
                 {
 
 
@@ -70,7 +70,26 @@
                                         <p class="btn btn-danger btn-block">@item.Price $</p>
                                     </div>
                                     <div class="col">
-                                        <a href="#" class="btn btn-success btn-block">Add to cart</a>
+                                        @{ int flag = 0;
+                                            foreach (var x in ViewBag.customer_items)
+                                            {
+                                                if (x.ItemId == @item.Id)
+                                                {
+                                                    flag = 1;
+                                                    break;
+                                                }
+                                            }
+                                            if (flag == 1)
+                                            {
+                                                <a href="#" class="btn btn-success btn-block">Remove</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="#" class="btn btn-success btn-block">Add to cart</a>
+                                            }
+
+                                        }
+
                                     </div>
                                 </div>
                             </div>
@@ -84,20 +103,20 @@
                     <nav aria-label="...">
                         <ul class="pagination">
                             <!--   <li class="page-item disabled">
-           <a class="page-link" href="#" tabindex="-1">Previous</a>
-       </li>
-       <li class="page-item"><a class="page-link" href="#">1</a></li>
-       <li class="page-item active">
-           <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-       </li>
-       <li class="page-item"><a class="page-link" href="#">3</a></li>
-       <li class="page-item">
-           <a class="page-link" href="#">Next</a>
-       </li>
-        -->
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item active">
+                                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                             -->
                             <div class="row">
                                 <div class="col-md-12">
-                                    @Html.PagedListPager((IPagedList)ViewBag.Items, page => Url.Action("CategoriesItems", "Home", new { page_number = page }))
+                                    @Html.PagedListPager((IPagedList)ViewBag.items, page => Url.Action("CategoryItems", "Items", new { category_id=@ViewBag.category_id,page_number = page }))
                                 </div>
                             </div>
                         </ul>
